@@ -17,20 +17,29 @@ class Program
     /// <param name="showEncodings">입력가능한 인코딩목록을 출력합니다.</param>
     static async Task Main(string? host = null, int? port = null, IPEndPoint? ip = null, Uri? uri = null, string? hex = null, string? str = null, string? encoding = null, bool showEncodings = false)
     {
-        if (showEncodings)
+        var trim_ex = new Option<int?>("aa");
+        if (showEncodings && trim_ex is { })
         {
-            Console.WriteLine(ConsoleTable.From(Encoding.GetEncodings().Select(info => new { info.Name, info.DisplayName, info.CodePage })).ToMarkDownString());
+            Console.WriteLine(ConsoleTable.From(TrimEx(Encoding.GetEncodings().Select(info => new { info.Name, info.DisplayName, info.CodePage }))).ToMarkDownString());
+            static IEnumerable<T> TrimEx<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IEnumerable<T> e) => e;
             return;
         }
         Console.WriteLine(new { host, port, ip, uri, hex, str, encoding });
 
         using Socket socket = new(SocketType.Stream, ProtocolType.Tcp) { ReceiveTimeout = 3000 };
+        try
+        {
         await ((host, port, ip, uri) switch
         {
             ({ } _host, { } _port, null, null) => socket.ConnectAsync(_host, _port),
             (null, null, { } _ip, null) => socket.ConnectAsync(_ip),
             (null, null, null, { } _uri) => socket.ConnectAsync(_uri.Host, _uri.Port),
         });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(new { ex.Message });
+        }
         var (data, enc) = (hex, str, encoding) switch
         {
             ({ } _hex, null, null) => (_hex, HexEncoding.Inst),
@@ -39,7 +48,9 @@ class Program
             (null, { } _str, { } e) => (_str, Encoding.GetEncoding(e)),
         };
         byte[] bin = enc.GetBytes(data);
-        Console.WriteLine(new { send = BitConverter.ToString(bin), len = socket.Send(bin) });
+        object len;
+        try { len = socket.Send(bin); } catch(Exception ex) { len = ex.Message; }
+        Console.WriteLine(new { send = BitConverter.ToString(bin), len });
         Console.WriteLine(new { recv = BitConverter.ToString(bin = Recv().ToArray()), len = bin.Length });
         Console.WriteLine(enc.GetString(bin));
         IEnumerable<byte> Recv()
