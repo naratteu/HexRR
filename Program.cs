@@ -1,4 +1,6 @@
 ﻿using ConsoleTables;
+using System.CommandLine;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -29,12 +31,12 @@ class Program
         using Socket socket = new(SocketType.Stream, ProtocolType.Tcp) { ReceiveTimeout = 3000 };
         try
         {
-        await ((host, port, ip, uri) switch
-        {
-            ({ } _host, { } _port, null, null) => socket.ConnectAsync(_host, _port),
-            (null, null, { } _ip, null) => socket.ConnectAsync(_ip),
-            (null, null, null, { } _uri) => socket.ConnectAsync(_uri.Host, _uri.Port),
-        });
+            await ((host, port, ip, uri) switch
+            {
+                ({ } _host, { } _port, null, null) => socket.ConnectAsync(_host, _port),
+                (null, null, { } _ip, null) => socket.ConnectAsync(_ip),
+                (null, null, null, { } _uri) => socket.ConnectAsync(_uri.Host, _uri.Port),
+            });
         }
         catch (Exception ex)
         {
