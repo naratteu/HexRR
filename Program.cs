@@ -1,12 +1,41 @@
-﻿using ConsoleTables;
-using System.CommandLine;
+﻿using Cocona;
+using Cocona.Command.Binder;
+using Cocona.Lite;
+using ConsoleTables;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 
-class Program
+var builder = CoconaLiteApp.CreateBuilder();
+builder.Services.AddSingleton<ICoconaValueConverter, IPEndPointConverter>();
+await builder.Build().RunAsync(Program.Main);
+
+class IPEndPointConverter : CoconaValueConverter, ICoconaValueConverter
+{
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaAppContextAccessor))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaApplicationMetadataProvider))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaConsoleProvider))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Binder.Validation.DataAnnotationsParameterValidatorProvider))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.CoconaBootstrapper))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.CoconaCommandResolver))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandDispatcher))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandDispatcherPipelineBuilder))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandMatcher))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.CommandLine.CoconaCommandLineParser))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.CommandLine.DefaultCoconaEnvironmentProvider))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaCommandHelpProvider))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpMessageBuilder))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpRenderer))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpRenderer))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CoconaParameterBinder))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(IPEndPointConverter))]
+    object? ICoconaValueConverter.ConvertTo(Type t, string? value)
+    => typeof(IPEndPoint) == t && IPEndPoint.TryParse(value ?? "", out var ip) ? ip : ConvertTo(t, value);
+}
+
+partial class Program
 {
     /// <summary>주소로 바이트요청 후 바이트응답을 출력합니다.</summary>
     /// <param name="host">(host, port), ip, uri중 하나의 조합으로 주소를 입력해야 합니다.</param>
@@ -19,8 +48,7 @@ class Program
     /// <param name="showEncodings">입력가능한 인코딩목록을 출력합니다.</param>
     static async Task Main(string? host = null, int? port = null, IPEndPoint? ip = null, Uri? uri = null, string? hex = null, string? str = null, string? encoding = null, bool showEncodings = false)
     {
-        var trim_ex = new Option<int?>("aa");
-        if (showEncodings && trim_ex is { })
+        if (showEncodings)
         {
             Console.WriteLine(ConsoleTable.From(TrimEx(Encoding.GetEncodings().Select(info => new { info.Name, info.DisplayName, info.CodePage }))).ToMarkDownString());
             static IEnumerable<T> TrimEx<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(IEnumerable<T> e) => e;
