@@ -14,23 +14,6 @@ await builder.Build().RunAsync(Program.Main);
 
 class IPEndPointConverter : CoconaValueConverter, ICoconaValueConverter
 {
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaAppContextAccessor))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaApplicationMetadataProvider))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Application.CoconaConsoleProvider))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Binder.Validation.DataAnnotationsParameterValidatorProvider))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.CoconaBootstrapper))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.CoconaCommandResolver))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandDispatcher))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandDispatcherPipelineBuilder))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Command.Dispatcher.CoconaCommandMatcher))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.CommandLine.CoconaCommandLineParser))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.CommandLine.DefaultCoconaEnvironmentProvider))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaCommandHelpProvider))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpMessageBuilder))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpRenderer))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(Cocona.Help.CoconaHelpRenderer))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(CoconaParameterBinder))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(IPEndPointConverter))]
     object? ICoconaValueConverter.ConvertTo(Type t, string? value)
     => typeof(IPEndPoint) == t && IPEndPoint.TryParse(value ?? "", out var ip) ? ip : ConvertTo(t, value);
 }
