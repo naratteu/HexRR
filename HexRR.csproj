@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="ConsoleTables" Version="2.6.1" />
-    <PackageReference Include="Cocona.Lite" Version="2.2.0" />
+    <ProjectReference Include="Cocona\src\Cocona.Lite\Cocona.Lite.csproj" />
+    <Compile Remove="Cocona\**" />
+    <EmbeddedResource Remove="Cocona\**" />
+    <None Remove="Cocona\**" />
   </ItemGroup>
 
 </Project>
