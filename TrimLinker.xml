@@ -1,7 +1,0 @@
-﻿<linker>
-  <assembly fullname="HexRR">
-    <type fullname="Program">
-      <method name="Main" />
-    </type>
-  </assembly>
-</linker>
