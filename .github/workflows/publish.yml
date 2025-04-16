@@ -7,20 +7,21 @@ jobs:
       matrix:
         include:
           - os: ubuntu
-            file: HexRR
+            rid: linux-x64
           - os: windows
-            file: HexRR.exe
+            rid: win-x64
+            ext: .exe
           - os: macos
-            file: HexRR
+            rid: osx-x64
     runs-on: ${{ matrix.os }}-latest
     steps:
     - uses: actions/checkout@v4
-    - run: dotnet publish -o bin/pub
+    - run: dotnet publish -o bin/pub -r ${{ matrix.rid }}
     - uses: svenstaro/upload-release-action@v2
       # Github->Settings->Actions->General->Workflow permissions->Read and write permissions 로 설정해야 작동함.
       with:
-        file: bin/pub/${{ matrix.file }}
-        asset_name: HexRR-${{ matrix.os }}-amd64
+        file: bin/pub/HexRR${{ matrix.ext }}
+        asset_name: HexRR-${{ matrix.rid }}${{ matrix.ext }}
         overwrite: true
         tag: ${{ github.ref }}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
