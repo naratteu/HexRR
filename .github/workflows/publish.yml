@@ -1,0 +1,26 @@
+on:
+  push:
+    tags: [ '*' ]
+jobs:
+  publish:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu
+            file: HexRR
+          - os: windows
+            file: HexRR.exe
+          - os: macos
+            file: HexRR
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: dotnet publish -o bin/pub
+    - uses: svenstaro/upload-release-action@v2
+      # Github->Settings->Actions->General->Workflow permissions->Read and write permissions 로 설정해야 작동함.
+      with:
+        file: bin/pub/${{ matrix.file }}
+        asset_name: HexRR-${{ matrix.os }}-amd64
+        overwrite: true
+        tag: ${{ github.ref }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}

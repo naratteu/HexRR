@@ -1,5 +1,5 @@
 # HexRR
-�ּҷ� ����Ʈ��û �� ����Ʈ������ Ȯ���ϴ� Ŀ�ǵ���� �������̽� �Դϴ�.
+주소로 바이트요청 후 바이트응답을 확인하는 커맨드라인 인터페이스 입니다.
 
 # Usage
 ```console
@@ -12,4 +12,4 @@
 
 # Todo
 * AOT Trimming Build
-* HexRR ���� ���� �̸� �����ϱ�
+* HexRR 보다 예쁜 이름 고민하기
