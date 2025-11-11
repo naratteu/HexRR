@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { rid:   linux-x64, os: ubuntu-slim }
+          - { rid:   linux-x64, os: ubuntu-latest }
           - { rid:     win-x64, os: windows-latest, ext: .exe }
           - { rid:     osx-x64, os: macos-15-intel }
           - { rid: linux-arm64, os: ubuntu-24.04-arm }
@@ -19,12 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - run: dotnet --version
-    - run: dotnet publish -o bin/pub -r ${{ matrix.rid }} -p:Version=${GITHUB_REF##refs/tags/v}
+    - run: dotnet publish -o bin/pub -p:Version=${GITHUB_REF##refs/tags/v}
     - uses: svenstaro/upload-release-action@v2
       # Github->Settings->Actions->General->Workflow permissions->Read and write permissions 로 설정해야 작동함.
       with:
         file: bin/pub/HexRR${{ matrix.ext }}
-        asset_name: HexRR-${{ matrix.rid }}${{ matrix.ext }}
+        asset_name: HexRR-${{ matrix.os }}${{ matrix.ext }}
         overwrite: true
         tag: ${{ github.ref }}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
