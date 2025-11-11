@@ -6,16 +6,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu
-            rid: linux-x64
-          - os: windows
-            rid: win-x64
-            ext: .exe
-          - os: macos
-            rid: osx-x64
-    runs-on: ${{ matrix.os }}-latest
+          - { rid:   linux-x64, os: ubuntu-slim }
+          - { rid:     win-x64, os: windows-latest, ext: .exe }
+          - { rid:     osx-x64, os: macos-15-intel }
+          - { rid: linux-arm64, os: ubuntu-24.04-arm }
+          - { rid:   win-arm64, os: windows-11-arm, ext: .exe }
+          - { rid:   osx-arm64, os: macos-latest }
+
+          - { rid:   linux-arm, os: ubuntu-24.04-arm }
+          - { rid:   linux-bionic-arm64, os: ubuntu-24.04-arm }
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+    - run: dotnet --version
     - run: dotnet publish -o bin/pub -r ${{ matrix.rid }}
     - uses: svenstaro/upload-release-action@v2
       # Github->Settings->Actions->General->Workflow permissions->Read and write permissions 로 설정해야 작동함.
