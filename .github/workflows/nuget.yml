@@ -1,0 +1,11 @@
+on:
+  push:
+    tags: [ '*' ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - run: |
+        dotnet pack -c Release -o . -p:Version=${GITHUB_REF##refs/tags/v}
+        dotnet nuget push *.nupkg --api-key "${{secrets.NU_TOKEN}}" --source "https://api.nuget.org/v3/index.json"
